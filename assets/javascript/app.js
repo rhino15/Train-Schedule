@@ -31,6 +31,27 @@ trainData.on("child_added", function(childSnapshot) {
 	var firstTrainTime = childSnapshot.val().trainTime;
 	var frequency = childSnapshot.val().frequency;
 
-	$('#trainTable > tbody').append("<tr><td>" + trainName + "</td><td>" + destination + "</td><td>" + frequency + "</td><td>" + 0 + "</td><td>" + 0 + "</td></tr>");
+	var trainFrequency = frequency;
+	var firstTime = firstTrainTime;
+
+	var firstTimeConverted = moment(firstTime, "hh:mm").subtract(1, "y");
+
+	// Current Time
+	var currentTime = moment();
+	console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+	// Difference between the times
+	var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+	console.log("DIFFERENCE IN TIME: " + diffTime);
+	// Time apart (remainder)
+	var tRemainder = diffTime % trainFrequency;
+	console.log(tRemainder);
+	// Minute Until Train
+	var minutesTillTrain = trainFrequency - tRemainder;
+	// Next Train
+	var nextTrain = moment().add(minutesTillTrain, "minutes");
+	var arrival = moment(nextTrain).format("hh:mm a");
+	console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
+
+	$('#trainTable > tbody').append("<tr><td>" + trainName + "</td><td>" + destination + "</td><td>" + frequency + "</td><td>" + arrival + "</td><td>" + minutesTillTrain + "</td></tr>");
 });
 
